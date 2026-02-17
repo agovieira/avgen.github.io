@@ -1,0 +1,598 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="description" content="AVGen Web App — gestão moderna para criatórios. Simples, rápido e confiável." />
+  <title>AVGen Web App</title>
+
+  <style>
+    :root{
+      --bg: #0b0f17;
+      --card: rgba(255,255,255,.06);
+      --card2: rgba(255,255,255,.04);
+      --text: rgba(255,255,255,.92);
+      --muted: rgba(255,255,255,.70);
+      --line: rgba(255,255,255,.10);
+      --shadow: 0 18px 60px rgba(0,0,0,.45);
+      --radius: 18px;
+      --max: 1120px;
+      --accentA: rgba(120,170,255,.95);
+      --accentB: rgba(114,255,208,.85);
+    }
+
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body{
+      margin: 0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans", "Helvetica Neue";
+      color: var(--text);
+      background:
+        radial-gradient(900px 500px at 15% 10%, rgba(120,170,255,.18), transparent 60%),
+        radial-gradient(800px 450px at 80% 30%, rgba(114,255,208,.10), transparent 55%),
+        radial-gradient(700px 500px at 50% 100%, rgba(255,255,255,.07), transparent 60%),
+        var(--bg);
+      line-height: 1.45;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    .wrap{ max-width: var(--max); margin: 0 auto; padding: 28px 20px 90px; } /* espaço extra por causa do botão fixo */
+    .topbar{
+      display:flex; align-items:center; justify-content:space-between;
+      padding: 12px 0;
+    }
+
+    .brand{
+      display:flex; gap:10px; align-items:center;
+      font-weight: 650; letter-spacing: .2px;
+    }
+
+    .mark{
+      width: 36px; height: 36px; border-radius: 12px;
+      background: linear-gradient(135deg, var(--accentA), var(--accentB));
+      box-shadow: 0 10px 30px rgba(120,170,255,.18);
+    }
+
+    .nav{ display:flex; gap: 14px; align-items:center; }
+    .nav a{
+      padding: 10px 12px; border-radius: 12px;
+      color: var(--muted);
+    }
+    .nav a:hover{ background: rgba(255,255,255,.06); color: var(--text); }
+
+    .btn{
+      display:inline-flex; align-items:center; justify-content:center;
+      padding: 11px 14px; border-radius: 14px; border: 1px solid var(--line);
+      background: rgba(255,255,255,.06);
+      color: var(--text);
+      transition: transform .08s ease, background .15s ease, border-color .15s ease;
+      gap: 10px;
+      cursor: pointer;
+      user-select: none;
+      white-space: nowrap;
+    }
+    .btn:hover{ background: rgba(255,255,255,.10); border-color: rgba(255,255,255,.16); }
+    .btn:active{ transform: translateY(1px); }
+    .btn.primary{
+      border-color: rgba(114,255,208,.40);
+      background: linear-gradient(135deg, rgba(120,170,255,.18), rgba(114,255,208,.12));
+    }
+
+    .hero{
+      display:grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap: 22px;
+      margin-top: 22px;
+      align-items: stretch;
+    }
+
+    @media (max-width: 920px){
+      .hero{ grid-template-columns: 1fr; }
+      .nav{ display:none; }
+    }
+
+    .panel{
+      border: 1px solid var(--line);
+      background: linear-gradient(180deg, var(--card), var(--card2));
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .hero-left{ padding: 34px; }
+    .kicker{
+      display:inline-flex;
+      gap: 8px;
+      align-items:center;
+      padding: 7px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.05);
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .kdot{
+      width: 8px; height: 8px; border-radius: 50%;
+      background: rgba(114,255,208,.85);
+      box-shadow: 0 0 0 6px rgba(114,255,208,.12);
+    }
+
+    h1{
+      margin: 14px 0 10px;
+      font-size: clamp(30px, 4.2vw, 44px);
+      line-height: 1.08;
+      letter-spacing: -0.6px;
+    }
+    .sub{
+      margin: 0 0 18px;
+      color: var(--muted);
+      font-size: 16px;
+      max-width: 60ch;
+    }
+
+    .cta{
+      display:flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 18px;
+    }
+
+    .meta{
+      margin-top: 18px;
+      display:flex; gap: 18px; flex-wrap: wrap;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .meta span{
+      display:flex; align-items:center; gap: 8px;
+      padding: 8px 10px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.04);
+    }
+    .icon{
+      width: 14px; height: 14px; display:inline-block;
+      border-radius: 4px;
+      background: rgba(255,255,255,.18);
+    }
+
+    .hero-right{ padding: 22px; display:flex; flex-direction:column; gap: 14px; }
+    .card{
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.04);
+      border-radius: 16px;
+      padding: 16px;
+    }
+    .card h3{ margin: 0 0 6px; font-size: 14px; letter-spacing: .2px; }
+    .card p{ margin: 0; color: var(--muted); font-size: 13px; }
+
+    .section{
+      margin-top: 22px;
+      padding: 26px;
+    }
+
+    .section-title{
+      display:flex; align-items:flex-end; justify-content:space-between; gap: 14px;
+      margin-bottom: 14px;
+    }
+    .section-title h2{
+      margin:0;
+      font-size: 18px;
+      letter-spacing: -.2px;
+    }
+    .section-title .hint{
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .features{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+    @media (max-width: 920px){
+      .features{ grid-template-columns: 1fr; }
+    }
+
+    /* Logos */
+    .logos{
+      display:grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 10px;
+      padding-top: 4px;
+    }
+    @media (max-width: 920px){
+      .logos{ grid-template-columns: repeat(3, 1fr); }
+    }
+    @media (max-width: 520px){
+      .logos{ grid-template-columns: repeat(2, 1fr); }
+    }
+
+    .logo-slot{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      height: 64px;
+      border-radius: 14px;
+      border: 1px dashed rgba(255,255,255,.18);
+      background: rgba(255,255,255,.03);
+      overflow:hidden;
+    }
+    .logo-slot img{
+      max-width: 82%;
+      max-height: 70%;
+      opacity: .95;
+      filter: saturate(1.05);
+    }
+    .logo-placeholder{
+      font-size: 12px;
+      color: rgba(255,255,255,.55);
+      letter-spacing: .2px;
+    }
+
+    /* Prints (Screenshots) */
+    .shots{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      padding-top: 4px;
+    }
+    @media (max-width: 920px){
+      .shots{ grid-template-columns: 1fr; }
+    }
+
+    .shot{
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.03);
+      border-radius: 16px;
+      overflow:hidden;
+    }
+    .shot figure{ margin:0; }
+    .shot img{
+      width: 100%;
+      height: 190px;
+      object-fit: cover;
+      display:block;
+      background: rgba(255,255,255,.04);
+    }
+    .shot figcaption{
+      padding: 12px 12px 14px;
+      color: var(--muted);
+      font-size: 13px;
+      border-top: 1px solid rgba(255,255,255,.06);
+    }
+
+    /* Vídeo */
+    .video{
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      overflow:hidden;
+      background: rgba(255,255,255,.03);
+    }
+    .video .ratio{
+      position: relative;
+      width: 100%;
+      padding-top: 56.25%; /* 16:9 */
+    }
+    .video iframe,
+    .video video{
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+      display:block;
+    }
+    .video-note{
+      padding: 12px 12px 14px;
+      color: var(--muted);
+      font-size: 13px;
+      border-top: 1px solid rgba(255,255,255,.06);
+    }
+
+    .footer{
+      margin-top: 18px;
+      display:flex; justify-content:space-between; gap: 14px; flex-wrap: wrap;
+      color: rgba(255,255,255,.55);
+      font-size: 13px;
+      padding: 18px 4px 0;
+    }
+    .footer a{ color: rgba(255,255,255,.72); }
+    .footer a:hover{ color: rgba(255,255,255,.92); }
+
+    /* Botão fixo WhatsApp */
+    .wa-float{
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(12, 18, 28, .78);
+      box-shadow: 0 18px 60px rgba(0,0,0,.45);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+    .wa-float:hover{
+      border-color: rgba(255,255,255,.22);
+      background: rgba(12, 18, 28, .88);
+    }
+    .wa-icon{
+      width: 34px;
+      height: 34px;
+      border-radius: 12px;
+      display:grid;
+      place-items:center;
+      background: linear-gradient(135deg, rgba(37, 211, 102, .25), rgba(114,255,208,.10));
+      border: 1px solid rgba(37, 211, 102, .25);
+    }
+    .wa-text{
+      display:flex;
+      flex-direction: column;
+      line-height: 1.1;
+    }
+    .wa-text strong{ font-size: 13px; }
+    .wa-text span{ font-size: 12px; color: rgba(255,255,255,.68); }
+    .wa-float svg{ width: 18px; height: 18px; }
+
+    /* Acessibilidade */
+    .sr-only{
+      position:absolute;
+      width:1px;height:1px;
+      padding:0;margin:-1px;
+      overflow:hidden;clip:rect(0,0,0,0);
+      white-space:nowrap;border:0;
+    }
+
+    /* Reduce motion */
+    @media (prefers-reduced-motion: reduce){
+      .btn{ transition: none; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <header class="topbar">
+      <div class="brand">
+        <div class="mark" aria-hidden="true"></div>
+        <div>AVGen Web App</div>
+      </div>
+
+      <nav class="nav" aria-label="Navegação">
+        <a href="#recursos">Recursos</a>
+        <a href="#prints">Prints</a>
+        <a href="#video">Vídeo</a>
+        <a href="#clientes">Criatórios</a>
+        <a href="#contato">Contato</a>
+      </nav>
+
+      <a class="btn primary" href="#contato">Falar comigo</a>
+    </header>
+
+    <main class="hero">
+      <section class="panel hero-left">
+        <div class="kicker"><span class="kdot" aria-hidden="true"></span> Plataforma para gestão de criatórios</div>
+
+        <h1>Gerencie seu criatório com precisão, simplicidade e velocidade.</h1>
+        <p class="sub">
+          O AVGen Web App centraliza cadastros, histórico e organização do manejo em uma interface clara e moderna.
+          Feito para reduzir tempo operacional e aumentar controle.
+        </p>
+
+        <div class="cta">
+          <!-- Troque o # pelo link de demonstração / landing / formulário -->
+          <a class="btn primary" href="#video">Ver o sistema em ação</a>
+          <a class="btn" href="#prints">Ver prints</a>
+        </div>
+
+        <div class="meta">
+          <span><i class="icon" aria-hidden="true"></i> Responsivo</span>
+          <span><i class="icon" aria-hidden="true"></i> Seguro</span>
+          <span><i class="icon" aria-hidden="true"></i> Prático</span>
+        </div>
+      </section>
+
+      <aside class="panel hero-right" aria-label="Destaques">
+        <div class="card">
+          <h3>Minimalista e profissional</h3>
+          <p>Layout limpo, tipografia forte e foco no essencial.</p>
+        </div>
+        <div class="card">
+          <h3>Organização & rastreabilidade</h3>
+          <p>Estruture informações do criatório e mantenha histórico sempre acessível.</p>
+        </div>
+        <div class="card">
+          <h3>Implantação simples</h3>
+          <p>Uma página de divulgação pronta para publicar em qualquer hospedagem.</p>
+        </div>
+      </aside>
+    </main>
+
+    <section id="recursos" class="panel section">
+      <div class="section-title">
+        <h2>Recursos</h2>
+        <div class="hint">Edite os textos conforme os módulos do AVGen</div>
+      </div>
+
+      <div class="features">
+        <div class="card">
+          <h3>Cadastros e registros</h3>
+          <p>Centralize informações essenciais e reduza retrabalho.</p>
+        </div>
+        <div class="card">
+          <h3>Relatórios claros</h3>
+          <p>Visão rápida do status do criatório, sem poluição visual.</p>
+        </div>
+        <div class="card">
+          <h3>Acesso em qualquer lugar</h3>
+          <p>Use no celular, tablet ou desktop com uma experiência fluida.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="prints" class="panel section">
+      <div class="section-title">
+        <h2>Prints do sistema</h2>
+        <div class="hint">Coloque as imagens em /assets/prints e atualize os src</div>
+      </div>
+
+      <div class="shots" aria-label="Prints do sistema">
+        <!-- Substitua pelos seus prints reais -->
+        <div class="shot">
+          <figure>
+            <!-- Ex: assets/prints/dashboard.jpg -->
+            <img src="assets/prints/print-1.jpg" alt="Tela: Dashboard do AVGen" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+            <div class="card" style="display:none; border:none; border-radius:0; background:transparent;">
+              <p style="margin:0; color:rgba(255,255,255,.55); font-size:13px;">Adicione: <strong>assets/prints/print-1.jpg</strong></p>
+            </div>
+            <figcaption>Dashboard / Visão geral do criatório</figcaption>
+          </figure>
+        </div>
+
+        <div class="shot">
+          <figure>
+            <img src="assets/prints/print-2.jpg" alt="Tela: Cadastro e histórico" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+            <div class="card" style="display:none; border:none; border-radius:0; background:transparent;">
+              <p style="margin:0; color:rgba(255,255,255,.55); font-size:13px;">Adicione: <strong>assets/prints/print-2.jpg</strong></p>
+            </div>
+            <figcaption>Cadastros e histórico</figcaption>
+          </figure>
+        </div>
+
+        <div class="shot">
+          <figure>
+            <img src="assets/prints/print-3.jpg" alt="Tela: Relatórios do sistema" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+            <div class="card" style="display:none; border:none; border-radius:0; background:transparent;">
+              <p style="margin:0; color:rgba(255,255,255,.55); font-size:13px;">Adicione: <strong>assets/prints/print-3.jpg</strong></p>
+            </div>
+            <figcaption>Relatórios e análises</figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <section id="video" class="panel section">
+      <div class="section-title">
+        <h2>Vídeo do sistema</h2>
+        <div class="hint">YouTube/Vimeo (iframe) ou arquivo local (video)</div>
+      </div>
+
+      <div class="video" aria-label="Vídeo de demonstração">
+        <div class="ratio">
+          <!-- OPÇÃO A (recomendada): YouTube/Vimeo -->
+          <!-- Troque o src pelo link embed do seu vídeo -->
+          <iframe
+            src="https://www.youtube.com/embed/VIDEO_ID_AQUI"
+            title="Demonstração do AVGen Web App"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowfullscreen></iframe>
+
+          <!-- OPÇÃO B: Arquivo local (descomente e comente o iframe acima) -->
+          <!--
+          <video controls preload="metadata" poster="assets/prints/print-1.jpg">
+            <source src="assets/video/avgen-demo.mp4" type="video/mp4" />
+            Seu navegador não suporta vídeo HTML5.
+          </video>
+          -->
+        </div>
+        <div class="video-note">
+          Dica: no YouTube, clique em <strong>Compartilhar → Incorporar</strong> para pegar o link embed.
+        </div>
+      </div>
+    </section>
+
+    <section id="clientes" class="panel section">
+      <div class="section-title">
+        <h2>Criatórios que utilizam o AVGen</h2>
+        <div class="hint">Coloque as logos em /assets/logos e atualize os &lt;img&gt;</div>
+      </div>
+
+      <div class="logos" aria-label="Logos de clientes">
+        <div class="logo-slot">
+          <!-- <img src="assets/logos/criatorio-1.svg" alt="Criatório X"> -->
+          <span class="logo-placeholder">Logo 1</span>
+        </div>
+        <div class="logo-slot">
+          <!-- <img src="assets/logos/criatorio-2.svg" alt="Criatório Y"> -->
+          <span class="logo-placeholder">Logo 2</span>
+        </div>
+        <div class="logo-slot">
+          <!-- <img src="assets/logos/criatorio-3.svg" alt="Criatório Z"> -->
+          <span class="logo-placeholder">Logo 3</span>
+        </div>
+        <div class="logo-slot"><span class="logo-placeholder">Logo 4</span></div>
+        <div class="logo-slot"><span class="logo-placeholder">Logo 5</span></div>
+        <div class="logo-slot"><span class="logo-placeholder">Logo 6</span></div>
+      </div>
+    </section>
+
+    <section id="contato" class="panel section">
+      <div class="section-title">
+        <h2>Contato</h2>
+        <div class="hint">Deixe aqui seu canal principal</div>
+      </div>
+
+      <div class="features">
+        <div class="card">
+          <h3>WhatsApp</h3>
+          <p>Atendimento rápido para dúvidas e demonstração.</p>
+        </div>
+        <div class="card">
+          <h3>E-mail</h3>
+          <p><a href="mailto:contato@seudominio.com">contato@seudominio.com</a></p>
+        </div>
+        <div class="card">
+          <h3>Localização</h3>
+          <p class="muted">Atendimento remoto / Brasil</p>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div>© <span id="year"></span> AVGen Web App</div>
+      <div>
+        <a href="#recursos">Recursos</a> ·
+        <a href="#prints">Prints</a> ·
+        <a href="#video">Vídeo</a> ·
+        <a href="#clientes">Criatórios</a> ·
+        <a href="#contato">Contato</a>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Botão fixo WhatsApp -->
+  <!-- Troque o número e a mensagem abaixo -->
+  <a
+    class="wa-float"
+    href="https://wa.me/55SEUNUMEROAQUI?text=Ol%C3%A1!%20Quero%20ver%20uma%20demonstra%C3%A7%C3%A3o%20do%20AVGen%20Web%20App."
+    target="_blank"
+    rel="noopener"
+    aria-label="Falar no WhatsApp"
+  >
+    <span class="wa-icon" aria-hidden="true">
+      <!-- Ícone simples (sem libs) -->
+      <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path d="M16 3C9.1 3 3.5 8.6 3.5 15.5c0 2.4.7 4.7 2 6.6L4 29l7.1-1.9c1.8 1 3.9 1.5 5.9 1.5 6.9 0 12.5-5.6 12.5-12.5S22.9 3 16 3Z" stroke="rgba(255,255,255,.75)" stroke-width="1.4"/>
+        <path d="M12.7 11.2c-.3-.7-.6-.7-.9-.7h-.8c-.3 0-.7.1-1 .5-.3.4-1.3 1.3-1.3 3.2 0 1.9 1.4 3.7 1.6 4 .2.3 2.7 4.2 6.6 5.7 3.2 1.3 3.9 1 4.6.9.7-.1 2.2-.9 2.5-1.8.3-.9.3-1.6.2-1.8-.1-.2-.3-.3-.6-.5l-2.2-1.1c-.3-.1-.5-.2-.7.1-.2.3-.8 1.1-1 1.3-.2.2-.4.3-.7.1-.3-.1-1.4-.5-2.6-1.6-1-1-1.6-2.2-1.8-2.5-.2-.3 0-.5.1-.7.1-.1.3-.3.4-.5.1-.2.2-.3.3-.5.1-.2 0-.4 0-.6l-1-2.2Z" fill="rgba(255,255,255,.82)"/>
+      </svg>
+    </span>
+
+    <span class="wa-text">
+      <strong>WhatsApp</strong>
+      <span>Falar sobre o AVGen</span>
+    </span>
+    <span class="sr-only">Abrir conversa no WhatsApp</span>
+  </a>
+
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
